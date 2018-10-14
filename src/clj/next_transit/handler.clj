@@ -1,7 +1,6 @@
 (ns next-transit.handler
   (:require [next-transit.middleware :as middleware]
-            [next-transit.layout :refer [error-page]]
-            [next-transit.routes.home :refer [home-routes]]
+            [next-transit.routes.services :refer [service-routes]]
             [compojure.core :refer [routes wrap-routes]]
             [ring.util.http-response :as response]
             [compojure.route :as route]
@@ -16,10 +15,7 @@
   :start
   (middleware/wrap-base
     (routes
-      (-> #'home-routes
-          (wrap-routes middleware/wrap-csrf)
-          (wrap-routes middleware/wrap-formats))
+          #'service-routes
       (route/not-found
-        (:body
-          (error-page {:status 404
-                       :title "page not found"}))))))
+        "page not found"))))
+

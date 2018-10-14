@@ -14,12 +14,11 @@
  :routes [{:id :oak-sfb
            :from :oak
            :to :sffb
-           :departure-times [{:id :set-1
-                              :times [[#time/lt"06:30" #time/lt"07:00"]
-                                      [#time/lt"07:00" #time/lt"07:35"]
-                                      [#time/lt"07:35" #time/lt"08:05"]
-                                      [#time/lt"08:10" #time/lt"08:40"]
-                                      [#time/lt"22:00" #time/lt "22:30"]]}]
+           :departure-times {:set-1 [[#time/lt"06:30" #time/lt"07:00"]
+                                     [#time/lt"07:00" #time/lt"07:35"]
+                                     [#time/lt"07:35" #time/lt"08:05"]
+                                     [#time/lt"08:10" #time/lt"08:40"]
+                                     [#time/lt"22:00" #time/lt"22:30"]]}
            :departures {#time/day :monday :set-1
                         #time/day :tuesday :set-1
                         #time/day :wednesday :set-1
