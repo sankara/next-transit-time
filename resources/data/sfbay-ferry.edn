@@ -1,0 +1,29 @@
+{:id :sfbay-ferry
+ :name "San Francisco Bay Ferry"
+ :type :ferry
+ ;; List of terminals
+ :terminals [{:id :oak
+              :name "Oakland/Jack London Sq"}
+             {:id :sffb
+              :name "San Francisco Ferry Building"}
+             {:id :ala
+              :name "Alameda Main St"}]
+
+ ;; List of valid routes. Introduce this later
+
+ :routes [{:id :oak-sfb
+           :from :oak
+           :to :sffb
+           :departure-times [{:id :set-1
+                              :times [[#time/lt"06:30" #time/lt"07:00"]
+                                      [#time/lt"07:00" #time/lt"07:35"]
+                                      [#time/lt"07:35" #time/lt"08:05"]
+                                      [#time/lt"08:10" #time/lt"08:40"]
+                                      [#time/lt"22:00" #time/lt "22:30"]]}]
+           :departures {#time/day :monday :set-1
+                        #time/day :tuesday :set-1
+                        #time/day :wednesday :set-1
+                        #time/day :thursday :set-1
+                        #time/day :friday :set-1
+                        #time/day :saturday :set-1
+                        #time/day :sunday :set-1}}]}
