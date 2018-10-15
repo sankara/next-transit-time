@@ -1,21 +1,11 @@
-# next-transit
+### Alexa Skill: Next ferry times for SF Bay Ferry
 
-generated using Luminus version "3.10.6"
+***WARNING: Don't take this too seriously. It's a hobby project***
 
-FIXME
+This is just a first cut. It works as in it gives the next ferry time assuming you are going from Oakland Jack London
+to San Francisco. 
 
-## Prerequisites
+Pending:
 
-You will need [Leiningen][1] 2.0 or above installed.
-
-[1]: https://github.com/technomancy/leiningen
-
-## Running
-
-To start a web server for the application, run:
-
-    lein run 
-
-## License
-
-Copyright © 2018 FIXME
+- Extend to support all terminals (need to painstakingly type in the data)
+- Add validation and dialog interaction to get the source and destination from Alexa
