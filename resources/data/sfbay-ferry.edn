@@ -14,15 +14,39 @@
  :routes [{:id :oak-sfb
            :from :oak
            :to :sffb
-           :departure-times {:set-1 [[#time/lt"06:30" #time/lt"07:00"]
-                                     [#time/lt"07:00" #time/lt"07:35"]
-                                     [#time/lt"07:35" #time/lt"08:05"]
-                                     [#time/lt"08:10" #time/lt"08:40"]
-                                     [#time/lt"22:00" #time/lt"22:30"]]}
-           :departures {#time/day :monday :set-1
-                        #time/day :tuesday :set-1
-                        #time/day :wednesday :set-1
-                        #time/day :thursday :set-1
-                        #time/day :friday :set-1
-                        #time/day :saturday :set-1
-                        #time/day :sunday :set-1}}]}
+           :departure-times {:weekdays [[#time/lt"06:30" #time/lt"07:00"]
+                                        [#time/lt"07:00" #time/lt"07:35"]
+                                        [#time/lt"07:35" #time/lt"08:05"]
+                                        [#time/lt"08:10" #time/lt"08:40"]
+                                        [#time/lt"08:40" #time/lt"09:10"]
+                                        [#time/lt"09:15" #time/lt"09:45"]
+                                        [#time/lt"10:15" #time/lt"10:45"]
+                                        [#time/lt"11:00" #time/lt"11:20"]
+                                        [#time/lt"11:40" #time/lt"12:15"]
+                                        [#time/lt"13:55" #time/lt"14:15"]
+                                        [#time/lt"14:40" #time/lt"15:05"]
+                                        [#time/lt"15:50" #time/lt"16:20"]
+                                        [#time/lt"16:30" #time/lt"17:00"]
+                                        [#time/lt"17:05" #time/lt"17:30"]
+                                        [#time/lt"17:55" #time/lt"18:20"]
+                                        [#time/lt"18:20" #time/lt"18:50"]
+                                        [#time/lt"19:05" #time/lt"19:30"]
+                                        [#time/lt"20:45" #time/lt"21:25"]]
+
+
+                             :weekends [[#time/lt"09:45" #time/lt"10:45"]
+                                        [#time/lt"11:30" #time/lt"11:55"]
+                                        [#time/lt"12:00" #time/lt"12:25"]
+                                        [#time/lt"13:55" #time/lt"14:20"]
+                                        [#time/lt"14:55" #time/lt"15:20"]
+                                        [#time/lt"16:35" #time/lt"17:00"]
+                                        [#time/lt"18:05" #time/lt"18:30"]
+                                        [#time/lt"19:45" #time/lt"20:10"]]}
+
+           :departures {#time/day :monday :weekdays
+                        #time/day :tuesday :weekdays
+                        #time/day :wednesday :weekdays
+                        #time/day :thursday :weekdays
+                        #time/day :friday :weekdays
+                        #time/day :saturday :weekends
+                        #time/day :sunday :weekends}}]}
