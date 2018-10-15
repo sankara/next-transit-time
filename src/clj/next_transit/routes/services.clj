@@ -20,21 +20,23 @@
                            :description "Just a way to get the next ferry - for now"}}}}
 
   (context "/api" []
-           :tags ["Next Ferry"]
+    :tags ["Next Ferry"]
 
-           (GET "/ferry/next" []
-                :return {:depart java.time.LocalTime, :arrive java.time.LocalTime}
-                :query-params [{from :- String :oak} {to :- String :sffb}]
-                :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
-                (let [result (ferry/next-transit-time from to)]
-                  (ok result)))
+    (GET "/ferry/next" []
+      :return {:depart java.time.LocalTime, :arrive java.time.LocalTime}
+      :query-params [{from :- String :oak} {to :- String :sffb}]
+      :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
+      (let [result (ferry/next-transit-time from to)]
+        (ok result)))
 
-           (POST "/ferry/next" []
-                 :return {:version String, :response {:outputSpeech {:type String :text String}}}
-                 :query-params [{from :- String :oak} {to :- String :sffb}]
-                 :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
-                 (let [result (ferry/next-transit-time from to)]
-                   (ok (to-alexa-response result))))))
+    (POST "/ferry/next" []
+      :return {:version String, :response {:outputSpeech {:type String :text String}}}
+      :query-params [{from :- String :oak} {to :- String :sffb}]
+      :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
+      (let [result (ferry/next-transit-time from to)]
+        (ok (to-alexa-response
+
+             result))))))
 
 
 ;;(def from :oak)

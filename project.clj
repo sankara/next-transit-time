@@ -40,7 +40,8 @@
   :target-path "target/%s/"
   :main ^:skip-aot next-transit.core
 
-  :plugins [[lein-immutant "2.1.0"]]
+  :plugins [[lein-cljfmt "0.6.1"]
+	    [lein-immutant "2.1.0"]]
 
   :profiles
   {:uberjar {:omit-source true

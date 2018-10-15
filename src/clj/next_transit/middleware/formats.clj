@@ -7,13 +7,13 @@
 
 (def instance
   (m/create
-    (-> m/default-options
-        (assoc-in
-          [:formats "application/json" :opts :modules]
-          [(Jdk8Module.)])
-        (update-in
-          [:formats "application/transit+json" :decoder-opts]
-          (partial merge time/time-deserialization-handlers))
-        (update-in
-          [:formats "application/transit+json" :encoder-opts]
-          (partial merge time/time-serialization-handlers)))))
+   (-> m/default-options
+       (assoc-in
+        [:formats "application/json" :opts :modules]
+        [(Jdk8Module.)])
+       (update-in
+        [:formats "application/transit+json" :decoder-opts]
+        (partial merge time/time-deserialization-handlers))
+       (update-in
+        [:formats "application/transit+json" :encoder-opts]
+        (partial merge time/time-serialization-handlers)))))

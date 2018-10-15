@@ -9,7 +9,6 @@
                    (io/reader (io/resource "data/sfbay-ferry.edn")))]
     (edn/read {:readers *data-readers*} data-file)))
 
-
 (defn- find-route [from to]
   (let [routes (filter #(and (= (:from %) from)
                              (= (:to %) to))
