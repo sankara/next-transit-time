@@ -19,7 +19,15 @@
                 :query-params [{from :- String :oak} {to :- String :sffb}]
                 :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
                 (let [result (ferry/next-transit-time from to)]
-                  (ok result)))))
+                  (ok result)))
+
+           (POST "/ferry/next" []
+             :return {:depart java.time.LocalTime, :arrive java.time.LocalTime}
+             :query-params [{from :- String :oak} {to :- String :sffb}]
+             :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
+             (let [result (ferry/next-transit-time from to)]
+               (ok result)))))
+
 
 ;;(def from :oak)
 ;;(def to :sffb)
