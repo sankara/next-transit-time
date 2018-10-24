@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+  next-transit-time:
+    image: sankara/next-transit-time
+    environment:
+      VIRTUAL_HOST: next-transit.api.sankara.me
+      LETSENCRYPT_HOST: next-transit.api.sankara.me
+      LETSENCRYPT_EMAIL: admin@sankara.me
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /opt/certs:/etc/nginx/certs:rw
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
+      - "nginx-proxy"
