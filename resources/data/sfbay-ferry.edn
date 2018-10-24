@@ -1,52 +1,88 @@
-{:id :sfbay-ferry
- :name "San Francisco Bay Ferry"
- :type :ferry
+{:id        :sfbay-ferry
+ :name      "San Francisco Bay Ferry"
+ :type      :ferry
  ;; List of terminals
- :terminals [{:id :oak
-              :name "Oakland/Jack London Sq"}
-             {:id :sffb
-              :name "San Francisco Ferry Building"}
-             {:id :ala
-              :name "Alameda Main St"}]
+ :terminals [{:id :oakj :name "Oakland/Jack London Sq"}
+             {:id :sffb :name "San Francisco Ferry Building"}
+             {:id :alam :name "Alameda Main St"}
+             {:id :sf41 :name "San Francisco Pier 41"}]
 
  ;; List of valid routes. Introduce this later
 
- :routes [{:id :oak-sfb
-           :from :oak
-           :to :sffb
-           :departure-times {:weekdays [[#time/lt"06:30" #time/lt"07:00"]
-                                        [#time/lt"07:00" #time/lt"07:35"]
-                                        [#time/lt"07:35" #time/lt"08:05"]
-                                        [#time/lt"08:10" #time/lt"08:40"]
-                                        [#time/lt"08:40" #time/lt"09:10"]
-                                        [#time/lt"09:15" #time/lt"09:45"]
-                                        [#time/lt"10:15" #time/lt"10:45"]
-                                        [#time/lt"11:00" #time/lt"11:20"]
-                                        [#time/lt"11:40" #time/lt"12:15"]
-                                        [#time/lt"13:55" #time/lt"14:15"]
-                                        [#time/lt"14:40" #time/lt"15:05"]
-                                        [#time/lt"15:50" #time/lt"16:20"]
-                                        [#time/lt"16:30" #time/lt"17:00"]
-                                        [#time/lt"17:05" #time/lt"17:30"]
-                                        [#time/lt"17:55" #time/lt"18:20"]
-                                        [#time/lt"18:20" #time/lt"18:50"]
-                                        [#time/lt"19:05" #time/lt"19:30"]
-                                        [#time/lt"20:45" #time/lt"21:25"]]
+ :routes    [{:id              :oakj-ala-sf
+              :departure-times {:weekdays [
+                                           {:alam #time/lt"06:00" :sffb #time/lt"06:20"}
+                                           {:oakj #time/lt"06:30" :alam #time/lt"06:40" :sffb #time/lt"07:00"}
+                                           {:oakj #time/lt"07:00" :alam #time/lt"07:15" :sffb #time/lt"07:35"}
+                                           {:oakj #time/lt"07:35" :alam #time/lt"07:45" :sffb #time/lt"08:05"}
+                                           {:oakj #time/lt"08:10" :sffb #time/lt"08:40"}
+                                           {:oakj #time/lt"08:40" :alam #time/lt"08:50" :sffb #time/lt"09:10"}
+                                           {:oakj #time/lt"09:15" :alam #time/lt"09:25" :sffb #time/lt"09:45"}
+                                           {:oakj #time/lt"10:15" :alam #time/lt"10:25" :sffb #time/lt"10:45" :sf41 #time/lt"11:00"}
+                                           {:alam #time/lt"10:50" :oakj #time/lt"11:00" :sffb #time/lt"11:20" :sf41 #time/lt"11:35"}
+                                           {:alam #time/lt"11:30" :oakj #time/lt"11:40" :sffb #time/lt"12:15" :sf41 #time/lt"12:20"}
+                                           {:alam #time/lt"13:45" :oakj #time/lt"13:55" :sffb #time/lt"14:15" :sf41 #time/lt"14:30"}
+                                           {:alam #time/lt"14:25" :oakj #time/lt"14:40" :sffb #time/lt"15:05"}
+                                           {:alam #time/lt"15:35" :oakj #time/lt"15:50" :sffb #time/lt"16:20"}
+                                           {:alam #time/lt"16:15" :oakj #time/lt"16:30" :sffb #time/lt"17:00"}
+                                           {:alam #time/lt"16:50" :oakj #time/lt"17:05" :sffb #time/lt"17:30"}
+                                           {:alam #time/lt"17:45" :oakj #time/lt"17:55" :sffb #time/lt"18:20"}
+                                           {:alam #time/lt"18:05" :oakj #time/lt"18:20" :sffb #time/lt"18:50"}
+                                           {:alam #time/lt"18:55" :oakj #time/lt"19:05" :sffb #time/lt"19:30"}
+                                           {:oakj #time/lt"20:45" :alam #time/lt"20:55" :sffb #time/lt"21:25"}
+                                           ]
 
+                                :weekends [
+                                           {:oakj #time/lt"09:45"} {:sffb #time/lt"10:45"}
+                                           {:oakj #time/lt"11:30"} {:sffb #time/lt"11:55"}
+                                           {:oakj #time/lt"12:00"} {:sffb #time/lt"12:25"}
+                                           {:oakj #time/lt"13:55"} {:sffb #time/lt"14:20"}
+                                           {:oakj #time/lt"14:55"} {:sffb #time/lt"15:20"}
+                                           {:oakj #time/lt"16:35"} {:sffb #time/lt"17:00"}
+                                           {:oakj #time/lt"18:05"} {:sffb #time/lt"18:30"}
+                                           {:oakj #time/lt"19:45"} {:sffb #time/lt"20:10"}
+                                           ]}
 
-                             :weekends [[#time/lt"09:45" #time/lt"10:45"]
-                                        [#time/lt"11:30" #time/lt"11:55"]
-                                        [#time/lt"12:00" #time/lt"12:25"]
-                                        [#time/lt"13:55" #time/lt"14:20"]
-                                        [#time/lt"14:55" #time/lt"15:20"]
-                                        [#time/lt"16:35" #time/lt"17:00"]
-                                        [#time/lt"18:05" #time/lt"18:30"]
-                                        [#time/lt"19:45" #time/lt"20:10"]]}
-
-           :departures {#time/day :monday :weekdays
-                        #time/day :tuesday :weekdays
-                        #time/day :wednesday :weekdays
-                        #time/day :thursday :weekdays
-                        #time/day :friday :weekdays
-                        #time/day :saturday :weekends
-                        #time/day :sunday :weekends}}]}
+              :departures      {#time/day :monday    :weekdays
+                                #time/day :tuesday   :weekdays
+                                #time/day :wednesday :weekdays
+                                #time/day :thursday  :weekdays
+                                #time/day :friday    :weekdays
+                                #time/day :saturday  :weekends
+                                #time/day :sunday    :weekends}}
+             {:id              :sf-ala-oak
+              :departure-times {:weekdays [
+                                           {:sffb #time/lt"06:25" :alam #time/lt"07:10" :oakj #time/lt"06:55"}
+                                           {:sffb #time/lt"07:05" :alam #time/lt"07:40" :oakj #time/lt"07:30"}
+                                           {:sffb #time/lt"07:35" :oakj #time/lt"08:00"}
+                                           {:sffb #time/lt"07:45" :alam #time/lt"08:05"}
+                                           {:sffb #time/lt"08:10" :alam #time/lt"08:45" :oakj #time/lt"08:35"}
+                                           {:sffb #time/lt"08:45" :alam #time/lt"09:20" :oakj #time/lt"09:10"}
+                                           {:sffb #time/lt"09:40" :alam #time/lt"10:20" :oakj #time/lt"10:10"}
+                                           {:sffb #time/lt"10:30" :alam #time/lt"10:45" :oakj #time/lt"10:55"}
+                                           {:sf41 #time/lt"10:50" :sffb #time/lt"11:05" :alam #time/lt"11:25" :oakj #time/lt"11:35"}
+                                           {:sf41 #time/lt"12:30" :sffb #time/lt"12:45" :alam #time/lt"13:20" :oakj #time/lt"13:05"}
+                                           {:sf41 #time/lt"13:45" :sffb #time/lt"14:00" :alam #time/lt"14:20" :oakj #time/lt"14:35"}
+                                           {:sffb #time/lt"15:15" :alam #time/lt"15:30" :oakj #time/lt"15:45"}
+                                           {:sf41 #time/lt"16:30" :alam #time/lt"16:10" :oakj #time/lt"16:20"}
+                                           {:sffb #time/lt"16:00" :alam #time/lt"16:20" :oakj #time/lt"16:35"}
+                                           {:sffb #time/lt"16:30" :alam #time/lt"16:45" :oakj #time/lt"17:00"}
+                                           {:sffb #time/lt"17:20" :alam #time/lt"17:40" :oakj #time/lt"17:50"}
+                                           {:sffb #time/lt"19:40" :alam #time/lt"18:00" :oakj #time/lt"18:15"}
+                                           {:sffb #time/lt"18:05" :alam #time/lt"18:35" :oakj #time/lt"18:45"}
+                                           {:sffb #time/lt"18:30" :alam #time/lt"18:50" :oakj #time/lt"19:00"}
+                                           {:sffb #time/lt"18:55" :alam #time/lt"19:15" :oakj #time/lt"19:25"}
+                                           {:sffb #time/lt"19:35" :alam #time/lt"19:55" :oakj #time/lt"20:10"}
+                                           {:sf41 #time/lt"20:05" :sffb #time/lt"20:25" :alam #time/lt"20:45" :oakj #time/lt"20:55"}
+                                           {:sffb #time/lt"21:30" :alam #time/lt"21:50" :oakj #time/lt"10:00"}
+                                           ]
+                                :weekends [
+                                           {:sf41 #time/lt"10:35" :sffb #time/lt"10:50" :alam #time/lt"11:10" :oakj #time/lt"11:25"}
+                                           {:sffb #time/lt"11:20" :alam #time/lt"11:40" :oakj #time/lt"11:55"}
+                                           {:sf41 #time/lt"13:00" :sffb #time/lt"13:15" :alam #time/lt"13:35" :oakj #time/lt"13:50"}
+                                           {:sf41 #time/lt"14:00" :sffb #time/lt"14:15" :alam #time/lt"14:35" :oakj #time/lt"14:50"}
+                                           {:sf41 #time/lt"15:40" :sffb #time/lt"15:55" :alam #time/lt"16:15" :oakj #time/lt"16:30"}
+                                           {:sf41 #time/lt"17:10" :sffb #time/lt"17:25" :alam #time/lt"17:45" :oakj #time/lt"18:00"}
+                                           {:sf41 #time/lt"18:50" :sffb #time/lt"19:05" :alam #time/lt"19:25" :oakj #time/lt"19:40"}
+                                           ]
+                                }}]}

@@ -9,29 +9,44 @@
                    (io/reader (io/resource "data/sfbay-ferry.edn")))]
     (edn/read {:readers *data-readers*} data-file)))
 
-(defn- find-route [from to]
-  (let [routes (filter #(and (= (:from %) from)
-                             (= (:to %) to))
-                       (:routes ferry-schedule))]
-    (first routes)))
-;;(find-route :oak :sffb)
+;;(def t-route (first (:routes ferry-schedule)))
 
-;;(t/after? (t/local-time "06:30") (t/local-time "03:30"))
-(defn next-transit-time [from to]
-  (let [from (keyword from)
-        to (keyword to)
-        ct (t/local-time)
-        day  (t/day-of-week)
-        route (find-route from to)
-        departure-set (get (:departures route) day)
-        departure-times (get (:departure-times route) departure-set)
-        next-departure (first
-                        (filter #(t/after? (first %) ct)
-                                departure-times))
-        [depart arrive] next-departure]
+(defn- get-departure-times-for-day
+  ([route]
+   (get-departure-times-for-day route (t/day-of-week)))
+  ([route day]
+   (let [departure-set (get (:departures route) day)]
+     (get (:departure-times route) departure-set))))
 
-    {:depart depart :arrive arrive}))
+;;(get-departure-times-for-day t-route)
+;;(def t-times (get-departure-times-for-day t-route))
 
-;;(def from :oak)
-;;(def to :sffb)
-;; (next-transit-time :oak :sffb)
+;;Route path is a single list of nodes
+;;That a path exists and the departure time at the starting terminal
+;;is in the next two hours.
+(defn- viable-route-path? [src dest route-path]
+  (let [src-time (get route-path src)
+        dest-time (get route-path dest)]
+    (and (not (nil? src-time))
+         (not (nil? dest-time))
+         (t/after? dest-time src-time)
+         (t/after? src-time (t/local-time))
+         (t/before? src-time (t/adjust (t/local-time) t/plus (t/hours 2))))))
+
+;;(viable-route-path? :sffb :oakj (last t-times))
+;;(viable-route-path? :oakj :sffb (last t-times))
+
+;;(filter (partial viable-route-path? :oakj :sffb) t-times)
+;;(filter (partial viable-route-path? :sffb :oakj) t-times)
+
+(defn- viable-route-paths [src dest route]
+  (filter (partial viable-route-path? src dest)
+          (get-departure-times-for-day route)))
+
+(defn next-transit-times [src dest]
+  (sort-by #(get % src)
+           (flatten (map
+                     (partial viable-route-paths src dest)
+                     (:routes ferry-schedule)))))
+
+;;(next-transit-times :oakj :sffb)
