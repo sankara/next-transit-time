@@ -4,8 +4,8 @@ services:
   next-transit-time:
     image: sankara/next-transit-time
     environment:
-      VIRTUAL_HOST: next-transit.api.sankara.me
-      LETSENCRYPT_HOST: next-transit.api.sankara.me
+      VIRTUAL_HOST: next-transit.dev.sankara.me
+      LETSENCRYPT_HOST: next-transit.dev.sankara.me
       LETSENCRYPT_EMAIL: admin@sankara.me
     volumes:
       - /etc/localtime:/etc/localtime:ro
