@@ -4,11 +4,17 @@
             [schema.core :as s]
             [next-transit.next-ferry :as ferry]))
 
-(defn- to-alexa-response [{depart :depart, arrive :arrive}]
-  (let [output-text (str "The next ferry is at " depart ", and will arrive at " arrive)]
-    {:version "1.0"
-     :response {:outputSpeech {:type "PlainText"
-                               :text output-text}}}))
+(defn- readable-text [kw from to result]
+  (let [prefix (condp = kw
+                 :next "The next ferry"
+                 :later "The one after that")]
+    (str prefix " leaves " (ferry/terminal-name from) " at " (get result from)
+         " and reaches " (ferry/terminal-name to) " at " (get result to))))
+
+(defn- to-alexa-response [output-text]
+  {:version "1.0"
+   :response {:outputSpeech {:type "PlainText"
+                             :text output-text}}})
 
 ;;(to-alexa-response {:depart "22:00" :arrive "22:00"})
 
@@ -23,21 +29,22 @@
     :tags ["Next Ferry"]
 
     (GET "/ferry/next" []
-      :query-params [{from :- String :oakj} {to :- String :sffb}]
+      :query-params [{from :- s/Keyword :oakj} {to :- s/Keyword :sffb}]
       :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
       (let [result (ferry/next-transit-times from to)]
+        (println from to)
         (ok result)))
 
     (POST "/ferry/next" []
       :return {:version String, :response {:outputSpeech {:type String :text String}}}
-      :query-params [{from :- String :oakj} {to :- String :sffb}]
+      :query-params [{from :- s/Keyword :oakj} {to :- s/Keyword :sffb}]
       :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
-      (let [result (ferry/next-transit-times from to)]
-        (ok (to-alexa-response
 
+      (let [[next-ferry later-ferry] (take 2 (ferry/next-transit-times from to))
+            t-next-ferry (readable-text :next from to next-ferry)
+            t-later-ferry (if (not (nil? later-ferry)) (readable-text :later from to later-ferry))]
 
-
-             result))))))
+        (ok (to-alexa-response (str t-next-ferry ". " t-later-ferry)))))))
 
 
 ;;(def from :oakj)

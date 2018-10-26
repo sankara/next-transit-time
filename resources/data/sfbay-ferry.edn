@@ -2,10 +2,10 @@
  :name      "San Francisco Bay Ferry"
  :type      :ferry
  ;; List of terminals
- :terminals [{:id :oakj :name "Oakland/Jack London Sq"}
-             {:id :sffb :name "San Francisco Ferry Building"}
-             {:id :alam :name "Alameda Main St"}
-             {:id :sf41 :name "San Francisco Pier 41"}]
+ :terminals {:oakj "Oakland Jack London Square"
+             :sffb "San Francisco Ferry Building"
+             :alam "Alameda Main St"
+             :sf41 "San Francisco Pier 41"}
 
  ;; List of valid routes. Introduce this later
 

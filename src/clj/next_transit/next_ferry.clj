@@ -9,6 +9,11 @@
                    (io/reader (io/resource "data/sfbay-ferry.edn")))]
     (edn/read {:readers *data-readers*} data-file)))
 
+(defn terminal-name [terminal-id]
+  (get (:terminals ferry-schedule) terminal-id))
+
+;;(terminal-name :oakj)
+
 ;;(def t-route (first (:routes ferry-schedule)))
 
 (defn- get-departure-times-for-day
@@ -29,9 +34,9 @@
         dest-time (get route-path dest)]
     (and (not (nil? src-time))
          (not (nil? dest-time))
-         (t/after? dest-time src-time)
-         (t/after? src-time (t/local-time))
-         (t/before? src-time (t/adjust (t/local-time) t/plus (t/hours 2))))))
+         (t/after? dest-time src-time))))
+         ;;(t/after? src-time (t/local-time)))))
+         ;;(t/before? src-time (t/adjust (t/local-time) t/plus (t/hours 12))))))
 
 ;;(viable-route-path? :sffb :oakj (last t-times))
 ;;(viable-route-path? :oakj :sffb (last t-times))
@@ -44,9 +49,10 @@
           (get-departure-times-for-day route)))
 
 (defn next-transit-times [src dest]
-  (sort-by #(get % src)
-           (flatten (map
-                     (partial viable-route-paths src dest)
-                     (:routes ferry-schedule)))))
+  (->> (:routes ferry-schedule)
+       (map (partial viable-route-paths src dest))
+       (flatten)
+       (sort-by #(get % src))))
+
 
 ;;(next-transit-times :oakj :sffb)
