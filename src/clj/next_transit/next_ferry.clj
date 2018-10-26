@@ -34,9 +34,9 @@
         dest-time (get route-path dest)]
     (and (not (nil? src-time))
          (not (nil? dest-time))
-         (t/after? dest-time src-time))))
-         ;;(t/after? src-time (t/local-time)))))
-         ;;(t/before? src-time (t/adjust (t/local-time) t/plus (t/hours 12))))))
+         (t/after? dest-time src-time)
+         (t/after? src-time (t/local-time))
+         (t/before? src-time (t/adjust (t/local-time) t/plus (t/hours 2))))))
 
 ;;(viable-route-path? :sffb :oakj (last t-times))
 ;;(viable-route-path? :oakj :sffb (last t-times))
