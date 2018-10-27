@@ -7,8 +7,37 @@ services:
       VIRTUAL_HOST: next-transit.dev.sankara.me
       LETSENCRYPT_HOST: next-transit.dev.sankara.me
       LETSENCRYPT_EMAIL: admin@sankara.me
+    links:
+      - fluentd
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: next-transit-time
+
+  fluentd:
+    build: ./fluentd
     volumes:
-      - /etc/localtime:/etc/localtime:ro
+      - ./fluentd/conf:/fluentd/etc
+    links:
+      - "elasticsearch"
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+    expose:
+      - 9200
+    ports:
+      - "9200:9200"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.4.2
+    links:
+      - "elasticsearch"
+    ports:
+      - "5601:5601"
 
   nginx-proxy:
     image: jwilder/nginx-proxy
@@ -20,12 +49,20 @@ services:
       - /opt/certs:/etc/nginx/certs:rw
       - /etc/nginx/vhost.d
       - /usr/share/nginx/html
-      - /etc/localtime:/etc/localtime:ro
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: nginx
 
   letsencrypt-nginx-proxy-companion:
     image: jrcs/letsencrypt-nginx-proxy-companion
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - /etc/localtime:/etc/localtime:ro
     volumes_from:
       - "nginx-proxy"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: letsencrypt
