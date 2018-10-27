@@ -34,6 +34,8 @@ services:
       - 9200
     ports:
       - "9200:9200"
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
 
   kibana:
     image: docker.elastic.co/kibana/kibana:6.4.2
