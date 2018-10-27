@@ -4,6 +4,28 @@
             [schema.core :as s]
             [next-transit.next-ferry :as ferry]))
 
+(defn- slot-values [request slot-name]
+  (->> request
+       :request
+       :intent
+       :slots
+       slot-name
+       :resolutions
+       :resolutionsPerAuthority
+       (map :values)
+       first
+       (map :value)
+       (map :id)
+       (map keyword)))
+;;(def request {:request {:intent {:slots {:from {:resolutions {:resolutionsPerAuthority [{:values [{:value {:name "Oakland" :id "oakj"}}]}]}}}}}})
+;;(slot-values request :from)
+
+
+(defn- parse-request [request]
+  (into {} (map #(identity [% (first (slot-values request %))]) [:from :to])))
+
+;;(parse-request request)
+
 (defn- readable-text [kw from to result]
   (let [prefix (condp = kw
                  :next "The next ferry"
@@ -37,13 +59,14 @@
 
     (POST "/ferry/next" []
       :return {:version String, :response {:outputSpeech {:type String :text String}}}
-      :query-params [{from :- s/Keyword :oakj} {to :- s/Keyword :sffb}]
+      :body [body s/Any]
       :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
 
-      (let [[next-ferry later-ferry] (take 2 (ferry/next-transit-times from to))
+      (let [{:keys [from to]} (parse-request body)
+            [next-ferry later-ferry] (take 2 (ferry/next-transit-times from to))
             t-next-ferry (readable-text :next from to next-ferry)
             t-later-ferry (if (not (nil? later-ferry)) (readable-text :later from to later-ferry))]
-
+        (println from to)
         (ok (to-alexa-response (str t-next-ferry ". " t-later-ferry)))))))
 
 

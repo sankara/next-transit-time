@@ -4,13 +4,16 @@
             [java-time :as t]
             [java-time-literals.core]))
 
+;;Refactor related functions into another ns
 (def ferry-schedule
   (let [data-file (java.io.PushbackReader.
                    (io/reader (io/resource "data/sfbay-ferry.edn")))]
     (edn/read {:readers *data-readers*} data-file)))
 
+(defn terminals [] (:terminals ferry-schedule))
+
 (defn terminal-name [terminal-id]
-  (get (:terminals ferry-schedule) terminal-id))
+  (get (terminals) terminal-id))
 
 ;;(terminal-name :oakj)
 
