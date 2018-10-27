@@ -14,7 +14,7 @@
 
 ;;(terminal-name :oakj)
 
-;;(def t-route (first (:routes ferry-schedule)))
+;;(def t-route (last (:routes ferry-schedule)))
 
 (defn- get-departure-times-for-day
   ([route]
@@ -56,3 +56,4 @@
 
 
 ;;(next-transit-times :oakj :sffb)
+;;(next-transit-times :sffb :oakj)

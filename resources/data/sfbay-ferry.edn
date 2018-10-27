@@ -33,14 +33,14 @@
                                            ]
 
                                 :weekends [
-                                           {:oakj #time/lt"09:45"} {:sffb #time/lt"10:45"}
-                                           {:oakj #time/lt"11:30"} {:sffb #time/lt"11:55"}
-                                           {:oakj #time/lt"12:00"} {:sffb #time/lt"12:25"}
-                                           {:oakj #time/lt"13:55"} {:sffb #time/lt"14:20"}
-                                           {:oakj #time/lt"14:55"} {:sffb #time/lt"15:20"}
-                                           {:oakj #time/lt"16:35"} {:sffb #time/lt"17:00"}
-                                           {:oakj #time/lt"18:05"} {:sffb #time/lt"18:30"}
-                                           {:oakj #time/lt"19:45"} {:sffb #time/lt"20:10"}
+                                           {:oakj #time/lt"09:45" :sffb #time/lt"10:45"}
+                                           {:oakj #time/lt"11:30" :sffb #time/lt"11:55"}
+                                           {:oakj #time/lt"12:00" :sffb #time/lt"12:25"}
+                                           {:oakj #time/lt"13:55" :sffb #time/lt"14:20"}
+                                           {:oakj #time/lt"14:55" :sffb #time/lt"15:20"}
+                                           {:oakj #time/lt"16:35" :sffb #time/lt"17:00"}
+                                           {:oakj #time/lt"18:05" :sffb #time/lt"18:30"}
+                                           {:oakj #time/lt"19:45" :sffb #time/lt"20:10"}
                                            ]}
 
               :departures      {#time/day :monday    :weekdays
