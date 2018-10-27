@@ -13,7 +13,7 @@ services:
     logging:
       driver: "fluentd"
       options:
-        fluentd-address: fluentd:24224
+        fluentd-address: localhost:24224
         tag: next-transit-time
 
   fluentd:
@@ -57,7 +57,7 @@ services:
     logging:
       driver: "fluentd"
       options:
-        fluentd-address: fluentd:24224
+        fluentd-address: localhost:24224
         tag: nginx
 
   letsencrypt-nginx-proxy-companion:
@@ -70,5 +70,5 @@ services:
     logging:
       driver: "fluentd"
       options:
-        fluentd-address: fluentd:24224
+        fluentd-address: localhost:24224
         tag: letsencrypt
