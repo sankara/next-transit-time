@@ -84,5 +84,11 @@
                                            {:sf41 #time/lt"15:40" :sffb #time/lt"15:55" :alam #time/lt"16:15" :oakj #time/lt"16:30"}
                                            {:sf41 #time/lt"17:10" :sffb #time/lt"17:25" :alam #time/lt"17:45" :oakj #time/lt"18:00"}
                                            {:sf41 #time/lt"18:50" :sffb #time/lt"19:05" :alam #time/lt"19:25" :oakj #time/lt"19:40"}
-                                           ]
-                                }}]}
+                                           ]}
+              :departures      {#time/day :monday    :weekdays
+                                #time/day :tuesday   :weekdays
+                                #time/day :wednesday :weekdays
+                                #time/day :thursday  :weekdays
+                                #time/day :friday    :weekdays
+                                #time/day :saturday  :weekends
+                                #time/day :sunday    :weekends}}]}
