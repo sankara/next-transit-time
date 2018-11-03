@@ -62,7 +62,7 @@
       :body [body s/Any]
       :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
 
-      (let [{:keys [from to]} (parse-request body)
+      (let [{:keys [from to] :or {from :oakj to :sffb}} (parse-request body)
             [next-ferry later-ferry] (take 2 (ferry/next-transit-times from to))
             t-next-ferry (readable-text :next from to next-ferry)
             t-later-ferry (if (not (nil? later-ferry)) (readable-text :later from to later-ferry))]

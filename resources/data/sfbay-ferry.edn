@@ -74,7 +74,7 @@
                                            {:sffb #time/lt"18:55" :alam #time/lt"19:15" :oakj #time/lt"19:25"}
                                            {:sffb #time/lt"19:35" :alam #time/lt"19:55" :oakj #time/lt"20:10"}
                                            {:sf41 #time/lt"20:05" :sffb #time/lt"20:25" :alam #time/lt"20:45" :oakj #time/lt"20:55"}
-                                           {:sffb #time/lt"21:30" :alam #time/lt"21:50" :oakj #time/lt"10:00"}
+                                           {:sffb #time/lt"21:30" :alam #time/lt"21:50" :oakj #time/lt"22:00"}
                                            ]
                                 :weekends [
                                            {:sf41 #time/lt"10:35" :sffb #time/lt"10:50" :alam #time/lt"11:10" :oakj #time/lt"11:25"}
