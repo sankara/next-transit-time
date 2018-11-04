@@ -4,6 +4,10 @@ services:
   next-transit-time:
     image: sankara/next-transit-time
     container_name: next-transit-time
+    ports:
+      - 3000:3000
+    volumes:
+      - /var/log/next-transit:/next-transit/log
     environment:
       VIRTUAL_HOST: next-transit.dev.sankara.me
       LETSENCRYPT_HOST: next-transit.dev.sankara.me

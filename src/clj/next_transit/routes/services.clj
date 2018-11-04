@@ -2,7 +2,8 @@
   (:require [ring.util.http-response :refer :all]
             [compojure.api.sweet :refer :all]
             [schema.core :as s]
-            [next-transit.next-ferry :as ferry]))
+            [next-transit.next-ferry :as ferry]
+            [clojure.tools.logging :as log]))
 
 (defn- slot-values [request slot-name]
   (->> request
@@ -54,7 +55,7 @@
       :query-params [{from :- s/Keyword :oakj} {to :- s/Keyword :sffb}]
       :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
       (let [result (ferry/next-transit-times from to)]
-        (println from to)
+        (log/info "Processing request with params" {:from from :to to})
         (ok result)))
 
     (POST "/ferry/next" []
@@ -66,7 +67,7 @@
             [next-ferry later-ferry] (take 2 (ferry/next-transit-times from to))
             t-next-ferry (readable-text :next from to next-ferry)
             t-later-ferry (if (not (nil? later-ferry)) (readable-text :later from to later-ferry))]
-        (println from to)
+        (log/info "Processing request with params" {:from from :to to})
         (ok (to-alexa-response (str t-next-ferry ". " t-later-ferry)))))))
 
 
