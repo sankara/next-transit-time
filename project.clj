@@ -5,6 +5,7 @@
 
   :dependencies [[clojure.java-time "0.3.2"]
                  [java-time-literals "2018-04-06"]
+                 [clj-http "3.9.1"]
                  [com.fasterxml.jackson.core/jackson-core "2.9.7"]
                  [com.fasterxml.jackson.datatype/jackson-datatype-jdk8 "2.6.3"]
                  [compojure "1.6.1"]
