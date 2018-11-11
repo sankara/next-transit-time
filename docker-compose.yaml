@@ -6,6 +6,7 @@ services:
     container_name: next-transit-time
     volumes:
       - /var/log/next-transit:/next-transit/log
+      - /opt/config/prod-config.edn:/next-transit/prod-config.edn
     ports:
       - 7000:7000
     environment:
