@@ -2,8 +2,8 @@
   (:require [next-transit.config :refer [env]]
             [clj-http.client :as client]
             [java-time :as t]
-            [java-time-literals.core]))
-
+            [java-time-literals.core]
+            [clojure.tools.logging :as log]))
 
 (def api-key
   (-> env :bart :api-key))
@@ -11,11 +11,12 @@
 ;;api-key
 
 (defn- call-bart-api [request & {:keys [client-params]}]
-  (println client-params)
+  (log/info "Calling bart with " request)
   (let [endpoint (str "https://api.bart.gov/api/" (:api request) ".aspx")
         query (merge request {:json "y" :key api-key})
         params (merge {:query-params query :as :json} client-params)
         response (client/get endpoint params)]
+    (log/info "Received response: " response)
     (:body response)))
 
 ;;(def response (call-bart-api {:api "stn" :cmd "stns"} :client-params {:debug true}))
