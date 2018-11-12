@@ -9,6 +9,7 @@ services:
       - /opt/config/prod-config.edn:/next-transit/prod-config.edn
     ports:
       - 7000:7000
+      - 3000:3000
     environment:
       VIRTUAL_HOST: next-transit.dev.sankara.me
       LETSENCRYPT_HOST: next-transit.dev.sankara.me
