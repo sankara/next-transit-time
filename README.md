@@ -2,10 +2,10 @@
 
 ***WARNING: Don't take this too seriously. It's a hobby project***
 
-This is just a first cut. It works as in it gives the next ferry time assuming you are going from Oakland Jack London
-to San Francisco. 
+Next Transit Time is the API that powers the my-transit Alexa Skill. So far it can give time info for ferry schedules between San Francisco Ferry Building, Pier 41, Alameda and Oakland Jack London Square terminal. Will extend that in the future to support more terminals. 
 
-Pending:
-
-- Extend to support all terminals (need to painstakingly type in the data)
-- Add validation and dialog interaction to get the source and destination from Alexa
+Caveats:
+- All code as it is was written adhoc and requires refactoring and cleanup
+- Extensible data representation is needed to make it easy to add more data
+- Refactoring required to make it extensible
+-
