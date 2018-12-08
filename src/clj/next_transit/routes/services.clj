@@ -4,7 +4,21 @@
             [schema.core :as s]
             [next-transit.next-ferry :as ferry]
             [next-transit.bart :as bart]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [java-time :as t]))
+
+(comment
+  (def request {:request {:intent
+                          {:name "ferry"
+                           :slots {:from_terminal {:resolutions {:resolutionsPerAuthority [{:values [{:value {:name "Oakland" :id "oakj"}}]}]}}}}}}))
+
+(defn- intent-name [request]
+  (->> request
+       :request
+       :intent
+       :name
+       keyword))
+;;(intent-name request)
 
 (defn- slot-values [request slot-name]
   (->> request
@@ -19,21 +33,39 @@
        (map :value)
        (map :id)
        (map keyword)))
-;;(def request {:request {:intent {:slots {:from {:resolutions {:resolutionsPerAuthority [{:values [{:value {:name "Oakland" :id "oakj"}}]}]}}}}}})
 ;;(slot-values request :from)
 
 
 (defn- parse-request [request]
-  (into {} (map #(identity [% (first (slot-values request %))]) [:from :to])))
+  (let [type (intent-name request)
+        slot-names (case type
+                     :ferry {:from :from_terminal
+                             :to :to_terminal}
+                     :bart {:from :from_station
+                            :to :to_station})]
+    (as-> slot-names t
+         (map (fn [[k v]] [k (first (slot-values request v))]) t)
+         (into {} t)
+         (assoc t :type type))))
 
 ;;(parse-request request)
 
-(defn- readable-text [kw from to result]
-  (let [prefix (condp = kw
-                 :next "The next ferry"
-                 :later "The one after that")]
-    (str prefix " leaves " (ferry/terminal-name from) " at " (get result from)
-         " and reaches " (ferry/terminal-name to) " at " (get result to))))
+(defn- readable-text [type kw from to result]
+  (let [prefix                      (condp = kw
+                                      :next (str "The next " (name type))
+                                      :later "The one after that")
+        name-resolver               (case type
+                                      :ferry ferry/terminal-name
+                                      :bart bart/station-name)
+        [from-name to-name]         (map name-resolver [from to])
+        [from-time to-time]         (map (partial get result) [from to])
+        [from-time-min to-time-min] (map #(t/time-between (t/local-time) % :minutes) [from-time to-time])]
+    (str prefix " leaves " from-name " in " from-time-min " minutes at " (get result from)
+         " and reaches " to-name " at " (get result to))))
+
+;;(readable-text :bart :next :lake :embr {:lake (t/local-time "11:30") :embr (t/local-time "12:30")})
+
+;;(t/time-between (t/local-time) (t/local-time "15:45") :minutes)
 
 (defn- to-alexa-response [output-text]
   {:version "1.0"
@@ -50,38 +82,45 @@
                            :description "Just a way to get the next ferry - for now"}}}}
 
   (context "/api" []
-    (context "/ferry" []
-             :tags ["Next Ferry"]
+    (context "/next" []
+      (GET "/transit" []
+           :query-params [type :- (s/enum :bart :ferry), from :- s/Keyword, to :- s/Keyword]
+           :summary "Returns the next ferry or bart from a given dock/station to a given dock/station"
 
-      (GET "/next" []
+           (let [result (case type
+                           :bart (bart/next-bart from to)
+                           :ferry (ferry/next-transit-times from to))]
+             (log/info "Processing request with params" {:from from :to to})
+             (ok result)))
+
+
+      (GET "/ferry" []
            :query-params [{from :- s/Keyword :oakj} {to :- s/Keyword :sffb}]
            :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
            (let [result (ferry/next-transit-times from to)]
              (log/info "Processing request with params" {:from from :to to})
              (ok result)))
 
-      (POST "/next" []
-            :return {:version String, :response {:outputSpeech {:type String :text String}}}
-            :body   [body s/Any]
-            :summary "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
-
-            (let [{:keys [from to] :or {from :oakj to :sffb}} (parse-request body)
-                  [next-ferry later-ferry] (take 2 (ferry/next-transit-times from to))
-                  t-next-ferry (readable-text :next from to next-ferry)
-                  t-later-ferry (if (not (nil? later-ferry)) (readable-text :later from to later-ferry))]
-              (log/info "Processing request with params" {:from from :to to})
-              (ok (to-alexa-response (str t-next-ferry ". " t-later-ferry))))))
-
-    (context "/bart" []
-             :tags ["Next Bart"]
-
-      (GET "/next" []
+      (GET "/bart" []
            :query-params [{from :- s/Keyword :lake} {to :- s/Keyword :embr}]
            :summary      "Returns the next bart between from and to. Defaults to Lake Merritt to Embarcadero"
            (let [result (bart/next-bart from to)]
              (log/info "Processing request for bart/next with params" {:from from :to to})
-             (ok result))))))
+             (ok result)))
 
+      (POST "/transit" []
+            :return {:version String, :response {:outputSpeech {:type String :text String}}}
+            :body   [body s/Any]
+            :summary "Invocation from Alexa only. Returns the next bart/ferry"
 
-;;(def from :oakj)
-;;(def to :sffb)
+            (let [{:keys [type from to]} (parse-request body)
+                  [next-transit later-transit] (take 2 (case type
+                                                         :ferry (ferry/next-transit-times from to)
+                                                         :bart (bart/next-bart from to)))
+                  t-next-transit (readable-text type :next from to next-transit)
+                  t-later-transit (readable-text type :later from to later-transit)]
+              (log/info "Processing request with params" {:from from :to to})
+              (ok (to-alexa-response (str t-next-transit ". " t-later-transit))))))))
+
+;;(def from :lake)
+;;(def to :embr)

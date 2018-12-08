@@ -34,9 +34,16 @@
                   (into {})))))
 ;;(stations)
 
+(defn station-name [station-code]
+  (-> (stations)
+      (get station-code)
+      (get :name)))
+
+;;(station-name :lake)
+
 (comment
   (defn- format-station-csv [[key station]]
-    (clojure.string/join "," (map #(str "\"" % "\"") [(name key) (:name station)])))
+    (clojure.string/join "," (map #(str "\"" % "\"") [(:name station) (name key)])))
   (format-station-csv (first (stations)))
   (map #(println (format-station-csv %)) (stations)))
 
