@@ -21,20 +21,23 @@
 
 ;;(def response (call-bart-api {:api "stn" :cmd "stns"} :client-params {:debug true}))
 
+(defn- format-station-abbr [str]
+  (keyword (clojure.string/lower-case str)))
+
 (def stations
   (memoize (fn []
              (->> (call-bart-api {:api "stn" :cmd "stns"})
                   :root
                   :stations
                   :station
-                  (map (fn [stn] [(keyword (:abbr stn)) stn]))
+                  (map (fn [stn] [(format-station-abbr (:abbr stn)) stn]))
                   (into {})))))
 ;;(stations)
 
 (comment
-  (defn- format-station-csv [[_ station]]
-    (clojure.string/join "," (map #(str "\"" % "\"") (vals (select-keys station [:name, :abbr])))))
-  (format-station-csv (first stations))
+  (defn- format-station-csv [[key station]]
+    (clojure.string/join "," (map #(str "\"" % "\"") [(name key) (:name station)])))
+  (format-station-csv (first (stations)))
   (map #(println (format-station-csv %)) (stations)))
 
 (defn- call-schedule-api [from_k to_k]
@@ -49,8 +52,8 @@
          :schedule
          :request
          :trip)))
-;;(call-schedule-api :24TH :ROCK)
-;;(def sched-hash (first (call-schedule-api :24TH :ROCK)))
+;;(call-schedule-api :24th :rock)
+;;(def sched-hash (first (call-schedule-api :24th :rock)))
 
 
 
@@ -66,7 +69,7 @@
         v (get hash k)]
     (if (re-find #"Time" s)
       (parse-bart-time v)
-      (keyword v))))
+      (format-station-abbr v))))
 ;;(extract-value sched-hash "origin")
 ;;(extract-value sched-hash "origTimeMin")
 
@@ -78,10 +81,12 @@
 ;;(extract-schedule sched-hash)
 
 
+;;(def from :24th)
+;;(def to :rock)
 (defn next-bart [from to]
   (->> (call-schedule-api from to)
        (map extract-schedule)
        (filter #(t/after? (get % from) (t/local-time)))))
-
-;; (next-bart :24TH :ROCK)
-;; (next-bart :LAKE :EMBR)
+;;(map extract-schedule (call-schedule-api from to))
+;; (next-bart :24th :rock)
+;; (next-bart :lake :embr)
