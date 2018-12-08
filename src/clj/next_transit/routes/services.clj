@@ -3,6 +3,7 @@
             [compojure.api.sweet :refer :all]
             [schema.core :as s]
             [next-transit.next-ferry :as ferry]
+            [next-transit.bart :as bart]
             [clojure.tools.logging :as log]))
 
 (defn- slot-values [request slot-name]
@@ -49,26 +50,37 @@
                            :description "Just a way to get the next ferry - for now"}}}}
 
   (context "/api" []
-    :tags ["Next Ferry"]
+    (context "/ferry" []
+             :tags ["Next Ferry"]
 
-    (GET "/ferry/next" []
-      :query-params [{from :- s/Keyword :oakj} {to :- s/Keyword :sffb}]
-      :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
-      (let [result (ferry/next-transit-times from to)]
-        (log/info "Processing request with params" {:from from :to to})
-        (ok result)))
+      (GET "/next" []
+           :query-params [{from :- s/Keyword :oakj} {to :- s/Keyword :sffb}]
+           :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
+           (let [result (ferry/next-transit-times from to)]
+             (log/info "Processing request with params" {:from from :to to})
+             (ok result)))
 
-    (POST "/ferry/next" []
-      :return {:version String, :response {:outputSpeech {:type String :text String}}}
-      :body [body s/Any]
-      :summary      "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
+      (POST "/next" []
+            :return {:version String, :response {:outputSpeech {:type String :text String}}}
+            :body   [body s/Any]
+            :summary "Returns the next ferry between from and to. Defaults to Oakland Jack London to San Francisco Ferry Building"
 
-      (let [{:keys [from to] :or {from :oakj to :sffb}} (parse-request body)
-            [next-ferry later-ferry] (take 2 (ferry/next-transit-times from to))
-            t-next-ferry (readable-text :next from to next-ferry)
-            t-later-ferry (if (not (nil? later-ferry)) (readable-text :later from to later-ferry))]
-        (log/info "Processing request with params" {:from from :to to})
-        (ok (to-alexa-response (str t-next-ferry ". " t-later-ferry)))))))
+            (let [{:keys [from to] :or {from :oakj to :sffb}} (parse-request body)
+                  [next-ferry later-ferry] (take 2 (ferry/next-transit-times from to))
+                  t-next-ferry (readable-text :next from to next-ferry)
+                  t-later-ferry (if (not (nil? later-ferry)) (readable-text :later from to later-ferry))]
+              (log/info "Processing request with params" {:from from :to to})
+              (ok (to-alexa-response (str t-next-ferry ". " t-later-ferry))))))
+
+    (context "/bart" []
+             :tags ["Next Bart"]
+
+      (GET "/next" []
+           :query-params [{from :- s/Keyword :lake} {to :- s/Keyword :embr}]
+           :summary      "Returns the next bart between from and to. Defaults to Lake Merritt to Embarcadero"
+           (let [result (bart/next-bart from to)]
+             (log/info "Processing request for bart/next with params" {:from from :to to})
+             (ok result))))))
 
 
 ;;(def from :oakj)
