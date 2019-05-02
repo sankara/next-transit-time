@@ -15,6 +15,7 @@ services:
       VIRTUAL_PORT: 3000
       LETSENCRYPT_HOST: next-transit.dev.sankara.me
       LETSENCRYPT_EMAIL: admin@sankara.me
+      ENABLE_IPV6: "true"
 
   nginx-proxy:
     image: jwilder/nginx-proxy
