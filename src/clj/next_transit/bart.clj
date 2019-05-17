@@ -24,6 +24,7 @@
 (defn- format-station-abbr [str]
   (keyword (clojure.string/lower-case str)))
 
+;;FIXME: Occasionally caches empty {} and fails miserably
 (def stations
   (memoize (fn []
              (->> (call-bart-api {:api "stn" :cmd "stns"})

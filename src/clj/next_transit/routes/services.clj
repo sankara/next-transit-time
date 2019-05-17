@@ -13,11 +13,14 @@
                            :slots {:from_terminal {:resolutions {:resolutionsPerAuthority [{:values [{:value {:name "Oakland" :id "oakj"}}]}]}}}}}}))
 
 (defn- intent-name [request]
-  (->> request
-       :request
-       :intent
-       :name
-       keyword))
+  (let [name (->> request
+                  :request
+                  :intent
+                  :name
+                  keyword)]
+    (do
+      (println name)
+      name)))
 ;;(intent-name request)
 
 (defn- slot-values [request slot-name]
@@ -34,7 +37,6 @@
        (map :id)
        (map keyword)))
 ;;(slot-values request :from)
-
 
 (defn- parse-request [request]
   (let [type (intent-name request)
@@ -73,6 +75,14 @@
                              :text output-text}}})
 
 ;;(to-alexa-response {:depart "22:00" :arrive "22:00"})
+
+(defn- get-transit-response [type from to]
+  (let [[next-transit later-transit] (take 2 (case type
+                                              :ferry (ferry/next-transit-times from to)
+                                              :bart (bart/next-bart from to)))
+       t-next-transit (readable-text type :next from to next-transit)
+       t-later-transit (readable-text type :later from to later-transit)]
+    (to-alexa-response (str t-next-transit ". " t-later-transit))))
 
 (defapi service-routes
   {:swagger {:ui "/swagger-ui"
@@ -113,14 +123,10 @@
             :body   [body s/Any]
             :summary "Invocation from Alexa only. Returns the next bart/ferry"
 
-            (let [{:keys [type from to]} (parse-request body)
-                  [next-transit later-transit] (take 2 (case type
-                                                         :ferry (ferry/next-transit-times from to)
-                                                         :bart (bart/next-bart from to)))
-                  t-next-transit (readable-text type :next from to next-transit)
-                  t-later-transit (readable-text type :later from to later-transit)]
-              (log/info "Processing request with params" {:from from :to to})
-              (ok (to-alexa-response (str t-next-transit ". " t-later-transit))))))))
+            (let [{:keys [type from to]} (parse-request body)]
+              (if (some nil? [type from to])(log/info body))
+              (log/info "Processing request with params" {:type type :from from :to to})
+              (ok (get-transit-response type from to)))))))
 
 ;;(def from :lake)
 ;;(def to :embr)
