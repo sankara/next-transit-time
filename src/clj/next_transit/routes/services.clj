@@ -13,14 +13,11 @@
                            :slots {:from_terminal {:resolutions {:resolutionsPerAuthority [{:values [{:value {:name "Oakland" :id "oakj"}}]}]}}}}}}))
 
 (defn- intent-name [request]
-  (let [name (->> request
+  (->> request
                   :request
                   :intent
                   :name
-                  keyword)]
-    (do
-      (println name)
-      name)))
+                  keyword))
 ;;(intent-name request)
 
 (defn- slot-values [request slot-name]
