@@ -14,7 +14,7 @@
 #   limitations under the License.
 #
 REGISTRY_HOST=docker.io
-USERNAME=$(USER)
+USERNAME=sankara
 NAME=next-transit-time
 
 RELEASE_SUPPORT := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))/.make-release-support
