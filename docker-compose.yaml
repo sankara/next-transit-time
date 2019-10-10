@@ -17,26 +17,7 @@ services:
       LETSENCRYPT_EMAIL: admin@sankara.me
       ENABLE_IPV6: "true"
 
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    container_name: nginx
-    depends_on:
-      - next-transit-time
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - /opt/certs:/etc/nginx/certs:rw
-      - /etc/nginx/vhost.d
-      - /usr/share/nginx/html
-
-  letsencrypt-nginx-proxy-companion:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: letsencrypt
-    depends_on:
-      - nginx-proxy
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    volumes_from:
-      - "nginx-proxy"
+networks:
+  default:
+    external:
+      name: nginx-proxy
