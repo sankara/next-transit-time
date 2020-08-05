@@ -7,7 +7,7 @@
 ;;Refactor related functions into another ns
 (def ferry-schedule
   (let [data-file (java.io.PushbackReader.
-                   (io/reader (io/resource "data/sfbay-ferry.edn")))]
+                    (io/reader (io/resource "data/sfbay-ferry.edn")))]
     (edn/read {:readers *data-readers*} data-file)))
 
 (defn terminals [] (:terminals ferry-schedule))
@@ -33,13 +33,14 @@
 ;;That a path exists and the departure time at the starting terminal
 ;;is in the next two hours.
 (defn- viable-route-path? [src dest route-path]
-  (let [src-time (get route-path src)
+  (let [src-time  (get route-path src)
         dest-time (get route-path dest)]
     (and (not (nil? src-time))
          (not (nil? dest-time))
          (t/after? dest-time src-time)
          (t/after? src-time (t/local-time)))))
-         ;;(t/before? src-time (t/adjust (t/local-time) t/plus (t/hours 12))))))
+
+;;(t/before? src-time (t/adjust (t/local-time) t/plus (t/hours 12))))))
 
 ;;(viable-route-path? :sffb :oakj (last t-times))
 ;;(viable-route-path? :oakj :sffb (last t-times))

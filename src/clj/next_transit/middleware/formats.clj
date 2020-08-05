@@ -9,7 +9,8 @@
   (m/create
    (-> m/default-options
        (assoc-in
-        [:formats "application/json" :opts :modules]
+        [:formats "application/json"
+         :opts    :modules]
         [(Jdk8Module.)])
        (update-in
         [:formats "application/transit+json" :decoder-opts]

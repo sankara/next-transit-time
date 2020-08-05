@@ -9,7 +9,7 @@
 
 (mount/defstate init-app
   :start ((or (:init defaults) identity))
-  :stop  ((or (:stop defaults) identity)))
+  :stop ((or (:stop defaults) identity)))
 
 (mount/defstate app
   :start

@@ -13,8 +13,8 @@
 (defn- call-bart-api [request & {:keys [client-params]}]
   (log/info "Calling bart with " request)
   (let [endpoint (str "https://api.bart.gov/api/" (:api request) ".aspx")
-        query (merge request {:json "y" :key api-key})
-        params (merge {:query-params query :as :json} client-params)
+        query    (merge request {:json "y" :key api-key})
+        params   (merge {:query-params query :as :json} client-params)
         response (client/get endpoint params)]
     (log/info "Received response: " response)
     (:body response)))
@@ -26,13 +26,15 @@
 
 ;;FIXME: Occasionally caches empty {} and fails miserably
 (def stations
-  (memoize (fn []
-             (->> (call-bart-api {:api "stn" :cmd "stns"})
-                  :root
-                  :stations
-                  :station
-                  (map (fn [stn] [(format-station-abbr (:abbr stn)) stn]))
-                  (into {})))))
+  (memoize
+    (fn []
+      (->> (call-bart-api {:api "stn" :cmd "stns"})
+           :root
+        :stations
+           :station
+        (map (fn [stn] [(format-station-abbr (:abbr stn)) stn]))
+           (into {})))))
+
 ;;(stations)
 
 (defn station-name [station-code]
@@ -49,26 +51,28 @@
   (map #(println (format-station-csv %)) (stations)))
 
 (defn- call-schedule-api [from_k to_k]
-  (let [from (name from_k)
-        to (name to_k)
-        response (call-bart-api {:api "sched"
-                                 :cmd "depart"
-                                 :orig from
-                                 :dest to})]
+  (let [from     (name from_k)
+        to       (name to_k)
+        response (call-bart-api
+                   {:api  "sched"
+                    :cmd  "depart"
+                    :orig from
+                    :dest to})]
     (->> response
          :root
-         :schedule
-         :request
-         :trip)))
+      :schedule
+      :request
+      :trip)))
+
 ;;(call-schedule-api :24th :rock)
 ;;(def sched-hash (first (call-schedule-api :24th :rock)))
 
 
-
 (defn- parse-bart-time [time]
   (try (t/local-time "h:mm a" time)
-       (catch java.time.format.DateTimeParseException e
-         (t/local-time "hh:mm a" time))))
+    (catch java.time.format.DateTimeParseException e
+      (t/local-time "hh:mm a" time))))
+
 ;;(parse-bart-time "11:59 PM")
 ;;(parse-bart-time "1:10 AM")
 
@@ -78,6 +82,7 @@
     (if (re-find #"Time" s)
       (parse-bart-time v)
       (format-station-abbr v))))
+
 ;;(extract-value sched-hash "origin")
 ;;(extract-value sched-hash "origTimeMin")
 
@@ -95,6 +100,7 @@
   (->> (call-schedule-api from to)
        (map extract-schedule)
        (filter #(t/after? (get % from) (t/local-time)))))
+
 ;;(map extract-schedule (call-schedule-api from to))
 ;; (next-bart :24th :rock)
 ;; (next-bart :lake :embr)

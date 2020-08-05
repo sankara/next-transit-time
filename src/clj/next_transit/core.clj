@@ -10,13 +10,14 @@
 
 (def cli-options
   [["-p" "--port PORT" "Port number"
-    :parse-fn #(Integer/parseInt %)]])
+    :parse-fn
+    #(Integer/parseInt %)]])
 
 (mount/defstate ^{:on-reload :noop} http-server
   :start
   (http/start
    (-> env
-       (assoc  :handler #'handler/app)
+       (assoc :handler #'handler/app)
        (update :io-threads #(or % (* 2 (.availableProcessors (Runtime/getRuntime)))))
        (update :port #(or (-> env :options :port) %))))
   :stop
@@ -25,8 +26,9 @@
 (mount/defstate ^{:on-reload :noop} repl-server
   :start
   (when (env :nrepl-port)
-    (nrepl/start {:bind (env :nrepl-bind)
-                  :port (env :nrepl-port)}))
+    (nrepl/start
+     {:bind (env :nrepl-bind)
+      :port (env :nrepl-port)}))
   :stop
   (when repl-server
     (nrepl/stop repl-server)))
