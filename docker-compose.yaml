@@ -13,7 +13,7 @@ services:
     environment:
       VIRTUAL_HOST: next-transit.sankara.me
       VIRTUAL_PORT: 3000
-      LETSENCRYPT_HOST: next-transit.ankara.me
+      LETSENCRYPT_HOST: next-transit.sankara.me
       LETSENCRYPT_EMAIL: admin@sankara.me
       ENABLE_IPV6: "true"
 
